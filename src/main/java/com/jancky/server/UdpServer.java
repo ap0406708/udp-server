@@ -22,7 +22,7 @@ import io.netty.channel.socket.nio.NioDatagramChannel;
  * @author jancky Date: 18/09/2018 15:30
  * @since JDK 1.8
  */
-@Component
+//@Component
 public class UdpServer implements CommandLineRunner{
 
 	private final static Logger LOGGER = LoggerFactory.getLogger(UdpServer.class);
