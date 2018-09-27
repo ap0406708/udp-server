@@ -45,8 +45,11 @@ public class UdpM2MServer implements CommandLineRunner{
                         ChannelPipeline pipeline = channel.pipeline();
                         pipeline.addLast(new DataMessageM2MDncoder()); 
                         pipeline.addLast(new DataMessageM2MEncoder());
+                        pipeline.addLast("handler", new UdpM2MSeverHandler());
                     }
                 });
+		
+		//bootstrap.handler(new UdpM2MSeverHandler());
 
 		ChannelFuture future = bootstrap.bind(nettyPort).sync();
 		if (future.isSuccess()) {

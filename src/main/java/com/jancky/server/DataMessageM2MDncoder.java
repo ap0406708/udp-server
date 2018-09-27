@@ -40,11 +40,20 @@ public class DataMessageM2MDncoder extends MessageToMessageDecoder<DatagramPacke
 		
 		CommonPacketData body = new CommonPacketData();
 		body.setbStatus(bStatus);
+		message.setBody(body);
 		
 		TailMessage foot = new TailMessage();
 		foot.setTail(tail);
+		message.setFooter(foot);
 		
-		System.out.println("decode bStatus:" + bStatus);
+		System.out.println("=====================================");
+		System.out.println("encode header:" + header);
+		System.out.println("encode lenH:" + lenH);
+		System.out.println("encode lenL:" + lenL);
+		System.out.println("encode opcode:" + opcode);
+		System.out.println("encode bStatus:" + bStatus);
+		System.out.println("encode tail:" + tail);
+		System.out.println("=====================================");
 		
 		out.add(message);
 
