@@ -14,6 +14,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
+import io.netty.channel.ChannelOutboundHandlerAdapter;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -39,19 +40,21 @@ public class UdpM2MServer implements CommandLineRunner{
 	public void start() throws InterruptedException {
 
 		Bootstrap bootstrap = new Bootstrap().group(group).channel(NioDatagramChannel.class)
-				.option(ChannelOption.SO_KEEPALIVE, true).handler(new ChannelInitializer<Channel>() {
+				//.option(ChannelOption.SO_BROADCAST, true)
+				.handler(new ChannelInitializer<Channel>() {
                     @Override
                     protected void initChannel(Channel channel) throws Exception {
                         ChannelPipeline pipeline = channel.pipeline();
                         pipeline.addLast(new DataMessageM2MDncoder()); 
                         pipeline.addLast(new DataMessageM2MEncoder());
                         pipeline.addLast("handler", new UdpM2MSeverHandler());
+                        pipeline.addLast("outbound", new ChannelOutboundHandlerAdapter());
                     }
                 });
 		
 		//bootstrap.handler(new UdpM2MSeverHandler());
 
-		ChannelFuture future = bootstrap.bind(nettyPort).sync();
+		ChannelFuture future = bootstrap.bind(nettyPort).sync().channel().closeFuture().sync().await();
 		if (future.isSuccess()) {
 			LOGGER.info("启动 Netty 成功");
 		}
