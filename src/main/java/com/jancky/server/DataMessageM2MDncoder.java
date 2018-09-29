@@ -8,9 +8,11 @@ import com.jancky.data.HeaderMessage;
 import com.jancky.data.TailMessage;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.socket.DatagramPacket;
 import io.netty.handler.codec.MessageToMessageDecoder;
+import io.netty.util.CharsetUtil;
 
 public class DataMessageM2MDncoder extends MessageToMessageDecoder<DatagramPacket> {
 
@@ -18,8 +20,8 @@ public class DataMessageM2MDncoder extends MessageToMessageDecoder<DatagramPacke
 	protected void decode(ChannelHandlerContext ctx, DatagramPacket datagramPacket, List<Object> out) throws Exception {
 		// TODO Auto-generated method stub
 
-		ByteBuf data = datagramPacket.content(); 
-		
+		ByteBuf data = datagramPacket.content();
+
 		byte header = data.readByte();
 		byte lenH = data.readByte();
 		byte lenL = data.readByte();
@@ -28,24 +30,24 @@ public class DataMessageM2MDncoder extends MessageToMessageDecoder<DatagramPacke
 		byte bStatus = data.readByte();
 
 		byte tail = data.readByte();
-		
+
 		CommonPacketMessage message = new CommonPacketMessage();
 		HeaderMessage headerMessage = new HeaderMessage();
 		headerMessage.setHeader(header);
 		headerMessage.setLenH(lenH);
 		headerMessage.setLenL(lenL);
 		headerMessage.setOpcode(opcode);
-		
+
 		message.setHeader(headerMessage);
-		
+
 		CommonPacketData body = new CommonPacketData();
 		body.setbStatus(bStatus);
 		message.setBody(body);
-		
+
 		TailMessage foot = new TailMessage();
 		foot.setTail(tail);
 		message.setFooter(foot);
-		
+
 		System.out.println("=====================================");
 		System.out.println("encode header:" + header);
 		System.out.println("encode lenH:" + lenH);
@@ -54,8 +56,13 @@ public class DataMessageM2MDncoder extends MessageToMessageDecoder<DatagramPacke
 		System.out.println("encode bStatus:" + bStatus);
 		System.out.println("encode tail:" + tail);
 		System.out.println("=====================================");
-		
+
 		out.add(message);
+
+		// 回复一条信息给客户端
+		ctx.writeAndFlush(new DatagramPacket(
+				Unpooled.copiedBuffer("Hello，我是Server，我的时间戳是" + System.currentTimeMillis(), CharsetUtil.UTF_8),
+				datagramPacket.sender())).sync();
 
 	}
 

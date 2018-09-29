@@ -26,12 +26,12 @@ public class DataMessageM2MEncoder extends MessageToMessageEncoder<CommonPacketM
 		ByteBuf buf = ctx.alloc().buffer(6);
 
 		buf.writeByte(header);
-		buf.writeByte(lenH); 
-		buf.writeByte(lenL); 
+		buf.writeByte(lenH);
+		buf.writeByte(lenL);
 		buf.writeByte(opcode);
-		buf.writeByte(bStatus); 
-		buf.writeByte(tail); 
-		
+		buf.writeByte(bStatus);
+		buf.writeByte(tail);
+
 		System.out.println("--------------------------------------------");
 		System.out.println("encode header:" + header);
 		System.out.println("encode lenH:" + lenH);
@@ -40,8 +40,9 @@ public class DataMessageM2MEncoder extends MessageToMessageEncoder<CommonPacketM
 		System.out.println("encode bStatus:" + bStatus);
 		System.out.println("encode tail:" + tail);
 		System.out.println("-------------------------------------------");
-		
+
 		out.add(buf);
+
 
 	}
 

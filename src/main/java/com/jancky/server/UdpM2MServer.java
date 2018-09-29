@@ -46,9 +46,11 @@ public class UdpM2MServer implements CommandLineRunner{
                     protected void initChannel(Channel channel) throws Exception {
                         ChannelPipeline pipeline = channel.pipeline();
                         pipeline.addLast(new DataMessageM2MDncoder()); 
-                        pipeline.addLast(new DataMessageM2MEncoder());
+                        //不知encode为什么无进
+                        //pipeline.addLast(new DataMessageM2MEncoder());
                         pipeline.addLast("handler", new UdpM2MSeverHandler());
-                        pipeline.addLast("outbound", new ChannelOutboundHandlerAdapter());
+                        //不知outbound为什么无进
+                        //pipeline.addLast("outbound", new OutboundHandler1());
                     }
                 });
 		
