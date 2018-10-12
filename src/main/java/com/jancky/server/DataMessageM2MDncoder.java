@@ -5,6 +5,8 @@ import java.util.List;
 import com.jancky.data.CommonPacketData;
 import com.jancky.data.CommonPacketMessage;
 import com.jancky.data.HeaderMessage;
+import com.jancky.data.RegRespData;
+import com.jancky.data.RegRespMessage;
 import com.jancky.data.TailMessage;
 
 import io.netty.buffer.ByteBuf;
@@ -60,8 +62,32 @@ public class DataMessageM2MDncoder extends MessageToMessageDecoder<DatagramPacke
 		out.add(message);
 
 		// 回复一条信息给客户端
+//		ctx.writeAndFlush(new DatagramPacket(
+//				Unpooled.copiedBuffer("Hello，我是Server，我的时间戳是" + System.currentTimeMillis(), CharsetUtil.UTF_8),
+//				datagramPacket.sender())).sync();
+
+		// 回复一条RegRespMessage给客户端
+
+		RegRespMessage rrMessage = new RegRespMessage();
+		
+		HeaderMessage headM = new HeaderMessage();
+		headerMessage.setHeader((byte) 0xfe);
+		headerMessage.setLenH((byte) 0x00);
+		headerMessage.setLenL((byte) 0x0d);
+		headerMessage.setOpcode((byte) 0x01);
+		rrMessage.setHeader(headM);
+		
+		RegRespData bodyM = new RegRespData();
+		bodyM.setAck((byte) 0x01);
+		bodyM.setnBasicGPSPacketPeriod(30);
+		rrMessage.setBody(bodyM);
+		
+		TailMessage tailM = new TailMessage();
+		tailM.setTail(tail);
+		rrMessage.setFooter(tailM);
+		
 		ctx.writeAndFlush(new DatagramPacket(
-				Unpooled.copiedBuffer("Hello，我是Server，我的时间戳是" + System.currentTimeMillis(), CharsetUtil.UTF_8),
+				Unpooled.copiedBuffer("From Server:" + rrMessage, CharsetUtil.UTF_8),
 				datagramPacket.sender())).sync();
 
 	}

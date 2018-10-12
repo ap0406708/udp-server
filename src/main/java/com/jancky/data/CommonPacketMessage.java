@@ -1,5 +1,9 @@
 package com.jancky.data;
 
+/*
+ * 1.1 设备向服务器发送 请求登陆数据包 
+ */
+
 public class CommonPacketMessage extends DataMessage<CommonPacketData, TailMessage> {
 
 	@Override
