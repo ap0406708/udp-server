@@ -6,8 +6,8 @@ public class HeaderMessage {
 	private byte lenH;
 	private byte lenL;
 	private byte opcode;
-	//private byte[] deviceID = new byte[5];
-	private int deviceID;
+	private byte[] deviceID;
+	//private int deviceID;
 	
 	public byte getHeader() {
 		return header;
@@ -33,10 +33,10 @@ public class HeaderMessage {
 	public void setOpcode(byte opcode) {
 		this.opcode = opcode;
 	}
-	public int getDeviceID() {
+	public byte[] getDeviceID() {
 		return deviceID;
 	}
-	public void setDeviceID(int deviceID) {
+	public void setDeviceID(byte[] deviceID) {
 		this.deviceID = deviceID;
 	}
 

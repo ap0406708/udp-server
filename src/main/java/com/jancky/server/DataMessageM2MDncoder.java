@@ -4,7 +4,10 @@ import java.util.List;
 
 import com.jancky.data.CommonPacketData;
 import com.jancky.data.CommonPacketMessage;
+import com.jancky.data.DataMessage;
 import com.jancky.data.HeaderMessage;
+import com.jancky.data.MailData;
+import com.jancky.data.MailMessage;
 import com.jancky.data.RegRespData;
 import com.jancky.data.RegRespMessage;
 import com.jancky.data.TailMessage;
@@ -28,25 +31,59 @@ public class DataMessageM2MDncoder extends MessageToMessageDecoder<DatagramPacke
 		byte lenH = data.readByte();
 		byte lenL = data.readByte();
 		byte opcode = data.readByte();
-
-		byte bStatus = data.readByte();
-
-		byte tail = data.readByte();
-
-		CommonPacketMessage message = new CommonPacketMessage();
+		
 		HeaderMessage headerMessage = new HeaderMessage();
 		headerMessage.setHeader(header);
 		headerMessage.setLenH(lenH);
 		headerMessage.setLenL(lenL);
 		headerMessage.setOpcode(opcode);
-
+		
+		byte[] deviceID = new byte[5];
+		data.readBytes(deviceID);
+		headerMessage.setDeviceID(deviceID);
+		
+		int opcodeI = 0xFF & (int) opcode;
+		System.out.println("opcodeI :" + opcodeI);
+		
+		DataMessage message = null;
+		if(opcodeI==149)
+		{
+			System.out.println("Client :" + "0x95");
+			message = new MailMessage();
+			MailData body = new MailData();
+			
+			byte[] gatewayID = new byte[5];
+			data.readBytes(gatewayID);
+			body.setGatewayID(gatewayID);
+			
+			message.setBody(body);
+			
+			
+			//System.out.println("message:" + message);
+			
+		}
+		else if(opcodeI==1)
+		{
+			System.out.println("Client :" + "0x01");
+			message = new CommonPacketMessage();
+			CommonPacketData body = new CommonPacketData();
+			
+			byte bStatus = data.readByte();
+			body.setbStatus(bStatus);
+			message.setBody(body);
+			
+			//System.out.println("message:" + message);
+		}
+		else
+		{
+			System.out.println("Client error msg:" + opcodeI);
+		}
+		
+		
 		message.setHeader(headerMessage);
 
-		CommonPacketData body = new CommonPacketData();
-		body.setbStatus(bStatus);
-		message.setBody(body);
-
 		TailMessage foot = new TailMessage();
+		byte tail = data.readByte();
 		foot.setTail(tail);
 		message.setFooter(foot);
 
@@ -55,7 +92,7 @@ public class DataMessageM2MDncoder extends MessageToMessageDecoder<DatagramPacke
 		System.out.println("encode lenH:" + lenH);
 		System.out.println("encode lenL:" + lenL);
 		System.out.println("encode opcode:" + opcode);
-		System.out.println("encode bStatus:" + bStatus);
+		//System.out.println("encode bStatus:" + bStatus);
 		System.out.println("encode tail:" + tail);
 		System.out.println("=====================================");
 
@@ -71,10 +108,10 @@ public class DataMessageM2MDncoder extends MessageToMessageDecoder<DatagramPacke
 		RegRespMessage rrMessage = new RegRespMessage();
 		
 		HeaderMessage headM = new HeaderMessage();
-		headerMessage.setHeader((byte) 0xfe);
-		headerMessage.setLenH((byte) 0x00);
-		headerMessage.setLenL((byte) 0x0d);
-		headerMessage.setOpcode((byte) 0x01);
+		headM.setHeader((byte) 0xfe);
+		headM.setLenH((byte) 0x00);
+		headM.setLenL((byte) 0x0d);
+		headM.setOpcode((byte) 0x01);
 		rrMessage.setHeader(headM);
 		
 		RegRespData bodyM = new RegRespData();

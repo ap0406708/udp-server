@@ -15,9 +15,9 @@ public class RegRespMessage extends DataMessage<RegRespData, TailMessage> {
 		strBuf.append("lenH:" + this.getHeader().getLenH()+"\t ");
 		strBuf.append("lenL:" +  this.getHeader().getLenL()+"\t ");
 		strBuf.append("opcode:" + this.getHeader().getOpcode()+"\t ");
-		strBuf.append("ack:" + this.getBody()==null?"null":this.getBody().getAck()+"\t ");
-		strBuf.append("nBasicGPSPacketPeriod:" + this.getBody()==null?"null":this.getBody().getnBasicGPSPacketPeriod()+"\t ");
-		strBuf.append("tail:" + this.getFooter()==null?"null":this.getFooter().getTail()+"\t ");
+		strBuf.append("ack:" + this.getBody().getAck()+"\t ");
+		strBuf.append("nBasicGPSPacketPeriod:" + this.getBody().getnBasicGPSPacketPeriod()+"\t ");
+		strBuf.append("tail:" + this.getFooter().getTail()+"\t ");
 		strBuf.append(">>>>CommonPacketMessage<<<<");
 		
 		return strBuf.toString();
